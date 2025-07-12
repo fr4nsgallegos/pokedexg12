@@ -1,17 +1,13 @@
-// To parse this JSON data, do
-//
-//     final pokemonReponse = pokemonReponseFromJson(jsonString);
-
 import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
-part 'pokemon_reponse.g.dart';
+part 'pokemon_reponse.g.dart'; //hemos agregado esta linea
 
 PokemonReponse pokemonReponseFromJson(String str) =>
     PokemonReponse.fromJson(json.decode(str));
 
 String pokemonReponseToJson(PokemonReponse data) => json.encode(data.toJson());
 
-@JsonSerializable()
+@JsonSerializable() //esta linea tambien se agrega
 class PokemonReponse {
   List<Pokemon> pokemon;
 
@@ -28,6 +24,7 @@ class PokemonReponse {
   };
 }
 
+@JsonSerializable() //esta linea tambien se agrega
 class Pokemon {
   int id;
   String num;
@@ -138,6 +135,7 @@ final eggValues = EnumValues({
   "5 km": Egg.THE_5_KM,
 });
 
+@JsonSerializable() //esta linea tambien se agrega
 class Evolution {
   String num;
   String name;
