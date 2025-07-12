@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pokedexg12/apiservices/pokemon_api.dart';
 import 'package:pokedexg12/apiservices/pokemon_api_service_http.dart';
 import 'package:pokedexg12/pages/models/pokemon_reponse.dart';
+import 'package:pokedexg12/widgets/pokemon_widget.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late PokemonApi _pokemonApi;
+  PokemonReponse? _pokemonReponse;
 
   void initPokemonRestClient() {
     final dio = Dio(
@@ -21,9 +23,15 @@ class _HomePageState extends State<HomePage> {
     _pokemonApi = PokemonApi(dio);
   }
 
+  Future<void> fetchPokemonReponse() async {
+    _pokemonReponse = await PokemonApiServiceHttp().getPokemonReponse();
+    setState(() {});
+  }
+
   @override
   void initState() {
     initPokemonRestClient();
+    fetchPokemonReponse();
     super.initState();
   }
 
@@ -42,6 +50,40 @@ class _HomePageState extends State<HomePage> {
             print(pokemones!.pokemon[0].name);
           },
         ),
+
+        body: _pokemonReponse == null
+            ? Center(child: CircularProgressIndicator())
+            : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      "Tu pokedex",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "¿Quién es ese pokemón? Busca el pokemón de tu preferencia y observa sus cualidades",
+                    ),
+                    SizedBox(height: 16),
+                    Expanded(
+                      child: GridView(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.93,
+                        ),
+                        children: _pokemonReponse!.pokemon
+                            .map((pokemon) => PokemonWidget(pokemon))
+                            .toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
       ),
     );
   }
